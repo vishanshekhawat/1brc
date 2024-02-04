@@ -64,7 +64,9 @@ func readFile() map[string][]float64 {
 	for reader.Scan() {
 		text := reader.Text()
 		index := strings.Index(text, ",")
-
+		if index == -1 {
+			continue
+		}
 		cityName := text[:index]
 		temp := text[index+2:]
 
