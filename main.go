@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -20,27 +21,36 @@ func main() {
 	cityData := readFile()
 	result := []string{}
 
+	var mu sync.Mutex
+	updateResult := func(res string) {
+		mu.Lock()
+		defer mu.Unlock()
+		result = append(result, res)
+	}
+
 	for city, temps := range cityData {
-		var min, max, avg float64
-		for i, temp := range temps {
-			if i == 0 {
-				min = temp
-				max = temp
+		go func(city string, temps []float64) {
+			var min, max, avg float64
+			for i, temp := range temps {
+				if i == 0 {
+					min = temp
+					max = temp
+				}
+				avg += temp
+				if min > temp {
+					min = temp
+				}
+				if max < temp {
+					max = temp
+				}
 			}
-			avg += temp
-			if min > temp {
-				min = temp
-			}
-			if max < temp {
-				max = temp
-			}
-		}
 
-		avg = avg / float64(len(temps))
-		// fmt.Println(avg)
-		avg = math.Ceil(avg*10) / 10
+			avg = avg / float64(len(temps))
+			// fmt.Println(avg)
+			avg = math.Ceil(avg*10) / 10
 
-		result = append(result, fmt.Sprintf("%s=%.1f/%.1f/%.1f", city, min, max, avg))
+			updateResult(fmt.Sprintf("%s=%.1f/%.1f/%.1f", city, min, max, avg))
+		}(city, temps)
 	}
 
 	fmt.Println(strings.Join(result, ", "))
