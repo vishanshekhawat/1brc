@@ -34,7 +34,7 @@ func main() {
 
 	for city, temps := range cityData {
 		go func(city string, temps []float64) {
-			fmt.Println(city)
+
 			var min, max, avg float64
 			for i, temp := range temps {
 				if i == 0 {
@@ -87,7 +87,7 @@ func readFile() map[string][]float64 {
 	citiesList := make(map[string][]float64)
 
 	// 20mb buffer size
-	chunkSize := 4 * 1024 * 1024
+	chunkSize := 10 * 1024 * 1024
 
 	// spawn a goroutine to read file in chunks and send it to the chunk channel for further processing
 	go func() {
@@ -128,7 +128,7 @@ func readFile() map[string][]float64 {
 	for t := range resultStream {
 		for _, text := range t {
 
-			index := strings.Index(text, ",")
+			index := strings.Index(text, ", ")
 			if index == -1 {
 				continue
 			}
