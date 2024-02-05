@@ -35,13 +35,39 @@ cities=("New York" "Los Angeles" "Chicago" "Houston" "Phoenix" "Philadelphia" "S
 )
 
 # Number of rows to generate
-num_rows=1000000000  # 1 billion rows
+num_rows=10000 
 
 # Generate random data and append to the CSV file
 for ((i = 1; i <= num_rows; i++)); do
     city=${cities[$((RANDOM % ${#cities[@]}))]}
     temperature=$(generate_random_temperature)
-    echo "$city, $temperature" >> ./files/cities_temperatures.csv
+    echo "$city, $temperature" >> ./files/a1.csv
 done
 
-echo "CSV file generated: cities_temperatures.csv"
+echo "CSV file generated: a1.csv"
+
+# Source CSV file
+source_file="./files/a1.csv"
+
+# Destination directory
+destination_dir="./files/"
+
+# Create the destination directory if it doesn't exist
+mkdir -p "$destination_dir"
+
+# Make 100 copies
+for ((i = 1; i <= 100; i++)); do
+    cp "$source_file" "$destination_dir/copy_$i.csv"
+done
+
+echo "100 copies of $source_file created in $destination_dir."
+
+
+exclude_file="cities_temperatures.csv"
+# Assuming you want to append the content of all CSV files in the current directory to cities_temperatures.csv
+cat $(ls ./files/*.csv | grep -v "$exclude_file") >> ./files/cities_temperatures.csv
+
+rm "$destination_dir/a1.csv"
+for ((i = 1; i <= 100; i++)); do
+    rm "$destination_dir/copy_$i.csv"
+done
