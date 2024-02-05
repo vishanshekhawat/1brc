@@ -79,5 +79,6 @@ func readFile() map[string][]float64 {
 		citiesList[cityName] = append(citiesList[cityName], tem)
 
 	}
+
 	return citiesList
 }
