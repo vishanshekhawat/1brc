@@ -10,7 +10,7 @@ destination_dir="../files/"
 mkdir -p "$destination_dir"
 
 # Make 100 copies
-for ((i = 1; i <= 100; i++)); do
+for ((i = 1; i <= 10; i++)); do
     cp "$source_file" "$destination_dir/copy_$i.csv"
 done
 
